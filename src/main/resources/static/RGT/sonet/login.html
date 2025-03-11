@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Journal - Login/Signup</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+    }
+
+    .form-container {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #555;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #4A90E2;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #4A90E2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    button:hover {
+      background-color: #357ABD;
+    }
+
+    p {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    a {
+      color: #4A90E2;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .error-message {
+      color: #ff4444;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- Login Form -->
+  <div class="form-container" id="loginForm">
+    <h2>Login</h2>
+    <form id="login">
+      <div class="form-group">
+        <label for="loginUsername">Username</label>
+        <input type="text" id="loginUsername" name="username" required>
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" name="password" required>
+      </div>
+      <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign up</a></p>
+  </div>
+
+  <!-- Signup Form -->
+  <div class="form-container hidden" id="signupForm">
+    <h2>Sign Up</h2>
+    <form id="signup">
+      <div class="form-group">
+        <label for="signupUsername">Username</label>
+        <input type="text" id="signupUsername" name="username" required>
+      </div>
+      <div class="form-group">
+        <label for="signupPassword">Password</label>
+        <input type="password" id="signupPassword" name="password" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <button type="submit">Sign Up</button>
+    </form>
+    <p>Already have an account? <a href="#" onclick="toggleForms()">Login</a></p>
+  </div>
+</div>
+<script>
+  // Toggle between login and signup forms
+  function toggleForms() {
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    loginForm.classList.toggle('hidden');
+    signupForm.classList.toggle('hidden');
+  }
+
+  // Handle login form submission
+  document.getElementById('login').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+
+    try {
+      const response = await fetch('/public/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          username,
+          password
+        })
+      });
+
+      if (response.ok) {
+        const token = await response.text();
+        // Store the token in localStorage
+        localStorage.setItem('jwt_token', token);
+        // Redirect to dashboard or home page
+        window.location.href = 'index.html';
+      } else {
+        const error = await response.text();
+        alert(error || 'Login failed. Please check your credentials.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred. Please try again.');
+    }
+  });
+
+  // Handle signup form submission
+  document.getElementById('signup').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById('signupUsername').value;
+    const password = document.getElementById('signupPassword').value;
+    const email = document.getElementById('email').value;
+
+    try {
+      const response = await fetch('/public/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username,
+          password,
+          email
+        })
+      });
+
+      if (response.ok) {
+        alert('Registration successful! Please login.');
+        toggleForms(); // Switch to login form
+      } else {
+        const error = await response.text();
+        alert(error || 'Registration failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred. Please try again.');
+    }
+  });
+
+  // Add input validation
+  const inputs = document.querySelectorAll('input');
+  inputs.forEach(input => {
+    input.addEventListener('input', function() {
+      if (this.value.trim() === '') {
+        this.classList.add('error');
+      } else {
+        this.classList.remove('error');
+      }
+    });
+  });
+</script>
+</body>
+</html>

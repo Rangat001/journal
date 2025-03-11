@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Journal - Profile</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <div class="profile-container">
+    <h2 style="padding-left :250px">USER-PROFILE</h2><br>
+    <form id="profileForm">
+      <div class="form-group">
+        <label for="username" id="username_val">Username</label>
+        <input type="text" id="username" name="username" required >
+      </div>
+      <div class="form-group">
+        <label for="email" id="email_val">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">New Password (leave blank to keep current)</label>
+        <input type="password" id="password" name="password">
+      </div>
+      <div class="form-group" style="display: flex; gap: 10px;">
+        <label for="sentimentAnalysis" style="margin-bottom: 0;">Enable Sentiment Analysis</label><span id="sentimentAnalysis_val" ></span>
+        <input type="checkbox" id="sentimentAnalysis" name="sentimentAnalysis">
+      </div>
+      <div class="button-group">
+        <button type="submit" class="primary-button">Update Profile</button>
+        <button type="button" id="deleteAccount" class="danger-button">Delete Account</button>
+      </div>
+    </form>
+    <h3>Journal Entries</h3>
+    <ul id="journalList"></ul>
+    <a href="index.html" class="back-link">Back to Home</a>
+  </div>
+</div>
+<script src="profile.js"></script>
+</body>
+</html>

@@ -44,7 +44,7 @@ public class publicController {
             userService.saveNewUser(userEntity);
             return new ResponseEntity<>(userEntity, HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

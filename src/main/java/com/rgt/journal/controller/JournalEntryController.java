@@ -11,7 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -30,9 +33,20 @@ public class JournalEntryController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         UserEntity user = userService.findByUserName(username);
-        List<JournalEntity> All = user.getJournalEntries();
+        List<Map<String, Object>> All= user.getJournalEntries().stream()
+                .map(entry -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", entry.getId().toString());  // Convert `_id` to string
+                    map.put("title", entry.getTitle());
+                    map.put("content", entry.getContent());
+                    map.put("date", entry.getDate());
+                    map.put("sentiment", entry.getSentiment());
+                    return map;
+                })
+                .collect(Collectors.toList());
         if (All != null && !All.isEmpty()){
 //            System.out.println("Get Call for review all Journal of : " + username);
+//            System.out.println(user.getJournalEntries());
             return new ResponseEntity<>(All, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

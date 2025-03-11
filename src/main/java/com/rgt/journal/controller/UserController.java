@@ -45,15 +45,18 @@ public class UserController {
         String username = authentication.getName();
         UserEntity user = userService.findByUserName(username);
 //        System.out.println("Update User Called by "+username);
+
         user.setUsername(userEntity.getUsername());
-        if(userEntity.getPassword() == null || userEntity.getPassword().isEmpty()){
-            user.setPassword(user.getPassword());
-        }else{
-            user.setPassword(userEntity.getPassword());
-        }
         user.setEmail(userEntity.getEmail());
         user.setSentimentAnalysis(userEntity.getSentimentAnalysis());
-        userService.saveNewUser(user);                                 // NewUser() Because If Password changed then it need to encrypt
+        if (userEntity.getPassword() == null || userEntity.getPassword().isEmpty()) {
+            user.setPassword(user.getPassword());
+            userService.saveUser(user);
+        }else{
+            user.setPassword(userEntity.getPassword());
+            userService.saveNewUser(user);
+        }
+                                       // NewUser() Because If Password changed then it need to encrypt
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
