@@ -1,15 +1,20 @@
 package com.rgt.journal.controller;
 
 import com.rgt.journal.apiResponse.QuotesResponse;
+import com.rgt.journal.config.RedisConfig;
 import com.rgt.journal.entity.UserEntity;
 import com.rgt.journal.service.QuotesService;
 import com.rgt.journal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Duration;
 
 
 @RestController
@@ -18,7 +23,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    
+
+    @Autowired
+    private RedisTemplate<String,Object> redisTemplate;
 
     @Autowired
     private QuotesService quotesService;
@@ -53,13 +60,25 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("index")
+    @GetMapping("/index")
     public ResponseEntity<?> greeeting(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        // Redis operations to check and get cached quote
+        ValueOperations<String, Object> valueOps = redisTemplate.opsForValue();
+        String redisKey = "quote:" + authentication.getName();
+        String cachedQuote = (String) valueOps.get(redisKey);
+
+        if (cachedQuote != null) {
+            return new ResponseEntity<>(authentication.getName() + "\n" + cachedQuote, HttpStatus.OK);
+        }
+
         QuotesResponse qoute =  quotesService.getQuote();
 
-        String greet = "Hello "+authentication.getName()+" \nToday's Quote: "+qoute.getQuote();
+        // set quote in cache
+        valueOps.set(redisKey, qoute.getQuote(), Duration.ofHours(24));
+
+        String greet = authentication.getName()+" \n"+qoute.getQuote();
 
         return new ResponseEntity<>(greet,HttpStatus.OK);
     }
