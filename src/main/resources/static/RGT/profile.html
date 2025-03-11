@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    .profile-field {
+      margin-bottom: 15px;
+    }
+    .profile-field label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .hidden {
+      display: none;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    /* Style for the sentiment toggle switch */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 25px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+/*      display: none;*/
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 25px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 21px;
+      width: 21px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #28a745;
+    }
+    input:checked + .slider:before {
+      transform: translateX(25px);
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+    #editBtn {
+      background-color: #007bff;
+      color: white;
+    }
+    #editBtn:hover {
+      background-color: #0056b3;
+    }
+    #saveBtn {
+      background-color: #28a745;
+      color: white;
+      display: none;
+    }
+    #saveBtn:hover {
+      background-color: #218838;
+    }
+    #cancelBtn {
+      background-color: #dc3545;
+      color: white;
+      display: none;
+    }
+    #cancelBtn:hover {
+      background-color: #c82333;
+    }
+    .alert {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      display: none;
+    }
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .alert-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>User Profile</h2>
+
+  <div id="alertBox" class="alert"></div>
+
+  <div class="profile-field">
+    <label for="username">Username:</label>
+    <span id="username" class="display-value"></span>
+    <input type="text" id="usernameInput" class="hidden">
+  </div>
+
+  <div class="profile-field">
+    <label for="email">Email:</label>
+    <span id="email" class="display-value"></span>
+    <input type="email" id="emailInput" class="hidden">
+  </div>
+
+  <div class="profile-field">
+    <label>Sentiment Analysis:</label>
+    <span id="sentiment" class="display-value"></span>
+    <!-- Toggle switch for editing sentimentAnalysis -->
+    <label class="toggle-switch" hidden id="sentimentToggleLabel">
+      <input type="checkbox" id="sentimentInput">
+      <span class="slider"></span>
+    </label>
+    <!-- Display the value as true or false -->
+    <span id="sentimentValue" class="hidden"></span>
+  </div>
+
+  <div class="profile-field">
+    <label>Roles:</label>
+    <span id="roles"></span>
+  </div>
+
+  <button type="button" id="editBtn">Edit</button>
+  <button type="button" id="saveBtn">Save Changes</button>
+  <button type="button" id="cancelBtn">Cancel</button>
+
+  <h3>Journal Entries</h3>
+  <ul id="journalList"></ul>
+</div>
+
+
+<script>
+  // Handle authentication response tokens
+  function handleAuthResponse(response) {
+    if (response.status === 401) {
+      // Token expired or invalid → Clear token
+      localStorage.removeItem("jwtToken");
+      console.warn("Unauthorized: Token expired or invalid");
+      return;
+    }
+    if (!response.ok) {
+      console.error("Request failed with status:", response.status);
+      return;
+    }
+    // Update token if available
+    let newToken = response.headers.get("Authorization");
+    if (newToken) {
+      localStorage.setItem("jwtToken", newToken);
+      console.log("JWT Token updated successfully.");
+    }
+  }
+
+  const token = localStorage.getItem("jwt_token");
+  let userData = {};
+
+  document.addEventListener("DOMContentLoaded", async function() {
+    try {
+      // Fetch user data
+      const userResponse = await fetch("/user", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      handleAuthResponse(userResponse);
+      userData = await userResponse.json();
+
+      document.getElementById("username").textContent = userData.username;
+      document.getElementById("email").textContent = userData.email;
+      document.getElementById("sentiment").textContent = userData.sentimentAnalysis ? "true" : "false";
+      document.getElementById("roles").textContent = userData.roles.join(", ");
+
+      // Set input fields values
+      document.getElementById("usernameInput").value = userData.username;
+      document.getElementById("emailInput").value = userData.email;
+
+      // Fetch journal entries
+      const journalResponse = await fetch("/journal", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      handleAuthResponse(journalResponse);
+      const journalData = await journalResponse.json();
+      const journalList = document.getElementById("journalList");
+      journalList.innerHTML = "";
+
+      journalData.forEach(entry => {
+        const li = document.createElement("li");
+        li.className = "journal-entry";
+        li.innerHTML = `<strong>${entry.title}</strong><br>
+                        <em>${new Date(entry.date).toLocaleString()}</em><br>
+                        <p>${entry.content}</p>
+                        <span>Sentiment: ${entry.sentiment}</span>`;
+        journalList.appendChild(li);
+      });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  });
+
+  // Cache DOM elements
+  const elements = {
+    username: document.getElementById("username"),
+    email: document.getElementById("email"),
+    sentiment: document.getElementById("sentiment"),
+    sentimentInput: document.getElementById("sentimentInput"),
+    sentimentToggleLabel: document.getElementById("sentimentToggleLabel"),
+    sentimentValue: document.getElementById("sentimentValue"),
+    roles: document.getElementById("roles"),
+    usernameInput: document.getElementById("usernameInput"),
+    emailInput: document.getElementById("emailInput"),
+    editButton: document.getElementById("editBtn"),
+    updateButton: document.getElementById("saveBtn"),
+    cancelButton: document.getElementById("cancelBtn"),
+    journalList: document.getElementById("journalList"),
+    alertBox: document.getElementById("alertBox")
+  };
+
+  // Function to update user data (stub)
+  async function updateUserData() {
+    console.log("updateUserData called");
+    // Get updated values from the input fields.
+    const updatedUsername = elements.usernameInput.value;
+    const updatedEmail = elements.emailInput.value;
+    const updatedSentiment = elements.sentimentInput.checked;
+
+    // Prepare data payload.
+    const updateData = {
+      username: updatedUsername,
+      email: updatedEmail,
+      sentimentAnalysis: updatedSentiment
+    };
+
+    // Make API call to update user data.
+    const updateResponse = await fetch("/user", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(updateData)
+    });
+    handleAuthResponse(updateResponse);
+    if(updateResponse.ok) {
+      // Update local data and UI.
+      userData.username = updatedUsername;
+      userData.email = updatedEmail;
+      userData.sentimentAnalysis = updatedSentiment;
+      elements.username.textContent = updatedUsername;
+      elements.email.textContent = updatedEmail;
+      elements.sentiment.textContent = updatedSentiment ? "true" : "false";
+      disableEdit();
+    } else {
+      console.error("Error updating user data.");
+    }
+  }
+
+  function enableEdit() {
+    // Hide display values and show inputs, including sentiment toggle.
+    elements.username.classList.add("hidden");
+    elements.email.classList.add("hidden");
+    elements.sentiment.classList.add("hidden");
+    elements.usernameInput.classList.remove("hidden");
+    elements.emailInput.classList.remove("hidden");
+    elements.sentimentToggleLabel.classList.remove("hidden");
+    elements.sentimentValue.classList.remove("hidden");
+
+    // Set the sentiment toggle display value.
+    elements.sentimentValue.textContent = elements.sentimentInput.checked ? "true" : "false";
+
+    // Toggle buttons visibility.
+    elements.editButton.style.display = "none";
+    elements.updateButton.style.display = "inline-block";
+    elements.cancelButton.style.display = "inline-block";
+
+    // Optionally, update displayed values when sentiment toggle changes.
+    elements.sentimentInput.addEventListener("change", function() {
+      elements.sentimentValue.textContent = this.checked ? "true" : "false";
+    });
+  }
+
+  function disableEdit() {
+    // Hide input fields and show display values.
+    elements.username.classList.remove("hidden");
+    elements.email.classList.remove("hidden");
+    elements.sentiment.classList.remove("hidden");
+    elements.usernameInput.classList.add("hidden");
+    elements.emailInput.classList.add("hidden");
+    elements.sentimentToggleLabel.classList.add("hidden");
+    elements.sentimentValue.classList.add("hidden");
+
+    // Toggle buttons visibility.
+    elements.editButton.style.display = "inline-block";
+    elements.updateButton.style.display = "none";
+    elements.cancelButton.style.display = "none";
+  }
+
+  elements.editButton.addEventListener("click", enableEdit);
+  elements.cancelButton.addEventListener("click", disableEdit);
+  elements.updateButton.addEventListener("click", updateUserData);
+
+//  document.addEventListener("DOMContentLoaded", loadUserData);
+</script>
+</body>
+</html>

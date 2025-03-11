@@ -22,6 +22,7 @@ public class UserEntity {
     @NonNull
     private String username;
     private String email;
+
     private boolean sentimentAnalysis;
     @NonNull
     private String password;
@@ -29,5 +30,10 @@ public class UserEntity {
     private  List<JournalEntity> journalEntries = new ArrayList<>();
     private List<String> roles = new ArrayList<>();
 
-
+    public boolean getSentimentAnalysis(){
+        return this.sentimentAnalysis;
+    }
+    public void setSentimentAnalysis(boolean b){
+        this.sentimentAnalysis = b;
+    }
 }

@@ -1,6 +1,7 @@
 package com.rgt.journal.utils;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
@@ -50,12 +51,23 @@ public class JWTutil {
                 .setSubject(subject)
                 .setHeaderParam("typ", "JWT")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiration time
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 1440)) // last para is minute
                 .signWith(getSigningKey())
                 .compact();
     }
 
     public Boolean validateToken(String token) {
-        return !isTokenExpired(token);
+        try {
+            return !isTokenExpired(token);
+        } catch (ExpiredJwtException e) {
+            return false; // Explicitly return false if token is expired
+        }
     }
+
+    public boolean isTokenExpiringSoon(String token) {
+        Date expiryDate = extractExpiration(token);
+        long timeLeft = expiryDate.getTime() - System.currentTimeMillis();
+        return timeLeft < 1000 * 60 * 360; // Refresh if less than 5 minutes left
+    }
+
 }

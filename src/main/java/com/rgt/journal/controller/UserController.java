@@ -46,7 +46,13 @@ public class UserController {
         UserEntity user = userService.findByUserName(username);
 //        System.out.println("Update User Called by "+username);
         user.setUsername(userEntity.getUsername());
-        user.setPassword(userEntity.getPassword());
+        if(userEntity.getPassword() == null || userEntity.getPassword().isEmpty()){
+            user.setPassword(user.getPassword());
+        }else{
+            user.setPassword(userEntity.getPassword());
+        }
+        user.setEmail(userEntity.getEmail());
+        user.setSentimentAnalysis(userEntity.getSentimentAnalysis());
         userService.saveNewUser(user);                                 // NewUser() Because If Password changed then it need to encrypt
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
