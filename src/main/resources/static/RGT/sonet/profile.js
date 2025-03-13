@@ -10,6 +10,7 @@ function handleAuthResponse(response) {
         // Token expired or invalid → Clear token
         localStorage.removeItem("jwtToken");
         console.warn("Unauthorized: Token expired or invalid");
+
         return;
     }
     if (!response.ok) {
@@ -32,13 +33,23 @@ document.addEventListener("DOMContentLoaded", async function() {
                 "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
             }
         });
+        if(userResponse.status == 401){
+                    window.location.href = "/RGT/sonet/login.html";
+        }
 
         handleAuthResponse(userResponse);
         userData = await userResponse.json();
 
         document.getElementById("username").placeholder = userData.username;
         document.getElementById("email").placeholder = userData.email;
-        document.getElementById("sentimentAnalysis_val").textContent = userData.sentimentAnalysis ? "true" : "false";
+        document.getElementById("sentimentAnalysis_val").textContent = userData.sentimentAnalysis ? "TRUE" : "FALSE";
+
+        if (document.getElementById("sentimentAnalysis_val").textContent == "TRUE"){
+            document.getElementById("sentimentAnalysis").checked = true;
+        }else{
+            document.getElementById("sentimentAnalysis").checked = false;
+        }
+
 
 
         // Fetch journal entries
@@ -96,9 +107,8 @@ document.getElementById('profileForm').addEventListener('submit', async (e) => {
         if (response.ok) {
             alert('Profile updated successfully');
             reload();
-        } else {
-            throw new Error('Failed to update profile');
         }
+//        else { throw new Error('Failed to update profile');}
     } catch (error) {
         console.error('Error:', error);
         alert('Failed to update profile');
@@ -128,6 +138,17 @@ document.getElementById('deleteAccount').addEventListener('click', async () => {
         }
     }
 });
+
+document.getElementById('sentimentAnalysis').addEventListener('click', async () => {
+    if (document.getElementById("sentimentAnalysis").checked == true){
+        document.getElementById("sentimentAnalysis_val").textContent = "TRUE";
+    }else{
+        document.getElementById("sentimentAnalysis_val").textContent = "FALSE";
+
+    }
+});
+
+
 
 // Initialize page
 checkAuth();

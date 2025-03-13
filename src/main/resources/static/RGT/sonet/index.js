@@ -40,9 +40,11 @@ function formatDateTime(date) {
     // Format: YYYY-MM-DDTHH:mm:ss
     return date.toISOString().slice(0, 19); // This will give format like "2025-03-11T17:11:44"
 }
+
 function formatDisplayDate(dateString) {
     return new Date(dateString).toLocaleString();
 }
+
 async function fetchJournalEntries() {
     try {
         const response = await fetch('/journal', {
@@ -62,6 +64,7 @@ async function fetchJournalEntries() {
         showError('Failed to load journal entries');
     }
 }
+
 // Display journal entries
 function displayJournalEntries(entries) {
     const entriesList = document.getElementById('entriesList');
@@ -81,7 +84,6 @@ function displayJournalEntries(entries) {
             </div>
             <div class="journal-entry-content">${entry.content || ''}</div>
             <div class="journal-actions">
-
                 <button onclick="editEntry('${entry.id}')" class="edit-button">Edit</button>
                 <button onclick="deleteEntry('${entry.id}')" class="delete-button">Delete</button>
             </div>
@@ -89,9 +91,11 @@ function displayJournalEntries(entries) {
         entriesList.appendChild(entryElement);
     });
 }
+
 document.getElementById('journalForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    const journalId = document.getElementById('journalId').value;
     const journalData = {
         title: document.getElementById('title').value,
         content: document.getElementById('content').value,
@@ -100,26 +104,43 @@ document.getElementById('journalForm').addEventListener('submit', async (e) => {
     };
 
     try {
-        const response = await fetch('/journal', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`
-            },
-            body: JSON.stringify(journalData)
-        });
+        let response;
+        if (journalId) {
+            // Update existing journal entry
+            response = await fetch(`/journal/${journalId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`
+                },
+                body: JSON.stringify(journalData)
+            });
+        } else {
+            // Create new journal entry
+            response = await fetch('/journal', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`
+                },
+                body: JSON.stringify(journalData)
+            });
+        }
 
         if (response.ok) {
-            const createdEntry = await response.json();
             document.getElementById('journalForm').reset();
+            document.getElementById('journalId').value = '';
             await fetchJournalEntries();
-            showSuccess('Journal entry created successfully!');
+            showSuccess('Journal entry saved successfully!');
         } else {
-            throw new Error('Failed to create journal entry');
+            throw new Error('Failed to save journal entry');
         }
     } catch (error) {
+        console.log(journalData);
+        console.log(journalId.toString());
+//        console.log(response);
         console.error('Error:', error);
-        showError('Failed to create journal entry');
+        showError('Failed to save journal entry');
     }
 });
 
@@ -151,14 +172,6 @@ async function updateEntry(id, data) {
     }
 }
 
-
-// Update the display function to handle the ISO format
-function formatDisplayDate(dateString) {
-    // Convert ISO date string to user-friendly format
-    const date = new Date(dateString);
-    return date.toLocaleString();
-}
-
 // Edit journal entry
 async function editEntry(id) {
     try {
@@ -170,6 +183,8 @@ async function editEntry(id) {
 
         if (response.ok) {
             const entry = await response.json();
+            document.getElementById('journalId').value = entry.id;
+            console.log(entry.id);
             document.getElementById('title').value = entry.title;
             document.getElementById('content').value = entry.content || '';
             document.getElementById('sentiment').value = entry.sentiment || '';
@@ -191,6 +206,7 @@ async function editEntry(id) {
                 // Reset form to creation mode
                 submitBtn.textContent = 'Save Entry';
                 form.reset();
+                document.getElementById('journalId').value = '';
                 form.onsubmit = null;
             };
         }
