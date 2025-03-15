@@ -121,38 +121,52 @@ journal/
    # For MacOS
    brew services start redis
    ```
-## 🎯 Application Screenshots
+
 
 <div align="center">
-  <table>
+  <h2>📱 Application Screenshots</h2>
+  
+  <!-- First Row -->
+  <table border="0" cellspacing="0" cellpadding="20">
     <tr>
-      <td align="center">
-        <img src="docs/assets/login.png" alt="Login Screen" width="400"/>
+      <td align="center" width="50%">
+        <img src="docs/assets/login.png" alt="Login Screen" width="100%" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
         <br/>
-        <em>Login Screen</em>
+        <h3>🔐 Login Screen</h3>
       </td>
-       <td align="center">
-        <img src="docs/assets/index.png" alt="Journal Entry" width="400"/>
+      <td align="center" width="50%">
+        <img src="docs/assets/index.png" alt="Index Page" width="100%" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
         <br/>
-        <em>Index</em>
-      </td>
-      <td align="center">
-        <img src="docs/assets/Journalview.png" alt="Journal Entry" width="400"/>
-        <br/>
-        <em>Journal Entry Creation</em>
-      </td>
-       <td align="center">
-        <img src="docs/assets/explore.png" alt="Journal Entry" width="400"/>
-        <br/>
-        <em>Explore Journals</em>
-      </td>
-       <td align="center">
-        <img src="docs/assets/profile.png" alt="Journal Entry" width="400"/>
-        <br/>
-        <em>Profile</em>
+        <h3>🏠 Dashboard</h3>
       </td>
     </tr>
   </table>
+
+  <!-- Second Row -->
+  <table border="0" cellspacing="0" cellpadding="20">
+    <tr>
+      <td align="center" width="33%">
+        <img src="docs/assets/Journalview.png" alt="Journal Entry" width="100%" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
+        <br/>
+        <h3>📝 Journal Entry</h3>
+      </td>
+      <td align="center" width="33%">
+        <img src="docs/assets/explore.png" alt="Explore Journals" width="100%" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
+        <br/>
+        <h3>🔍 Explore Journals</h3>
+      </td>
+      <td align="center" width="33%">
+        <img src="docs/assets/profile.png" alt="Profile Page" width="100%" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
+        <br/>
+        <h3>👤 Profile</h3>
+      </td>
+    </tr>
+  </table>
+
+  <br/>
+  <p align="center">
+    <em>Experience the complete journey of digital journaling with our intuitive user interface</em>
+  </p>
 </div>
 
 ## 🚀 Getting Started
