@@ -121,6 +121,39 @@ journal/
    # For MacOS
    brew services start redis
    ```
+## 🎯 Application Screenshots
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="docs/assets/login.png" alt="Login Screen" width="400"/>
+        <br/>
+        <em>Login Screen</em>
+      </td>
+       <td align="center">
+        <img src="docs/assets/index.png" alt="Journal Entry" width="400"/>
+        <br/>
+        <em>Index</em>
+      </td>
+      <td align="center">
+        <img src="docs/assets/Journalview.png" alt="Journal Entry" width="400"/>
+        <br/>
+        <em>Journal Entry Creation</em>
+      </td>
+       <td align="center">
+        <img src="docs/assets/explore.png" alt="Journal Entry" width="400"/>
+        <br/>
+        <em>Explore Journals</em>
+      </td>
+       <td align="center">
+        <img src="docs/assets/profile.png" alt="Journal Entry" width="400"/>
+        <br/>
+        <em>Profile</em>
+      </td>
+    </tr>
+  </table>
+</div>
 
 ## 🚀 Getting Started
 
