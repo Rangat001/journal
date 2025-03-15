@@ -1,20 +1,25 @@
 package com.rgt.journal.controller;
 
+import com.rgt.journal.config.RedisConfig;
 import com.rgt.journal.entity.JournalEntity;
 import com.rgt.journal.entity.UserEntity;
 import com.rgt.journal.service.JournalEntryService;
 import com.rgt.journal.service.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -27,6 +32,26 @@ public class JournalEntryController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    private void invalidateCache() {
+        try {
+            // Delete all cache entries with the prefix
+            Set<String> cacheKeys = redisTemplate.keys("journal:explore:*");
+            if (cacheKeys != null && !cacheKeys.isEmpty()) {
+                redisTemplate.delete(cacheKeys);
+            }
+
+            // Update the last modification timestamp
+            redisTemplate.opsForValue().set("journal:lastUpdate",
+                    LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        } catch (Exception e) {
+            // Log error but don't disrupt the main operation
+            e.printStackTrace();
+        }
+    }
 
     @GetMapping()
     public ResponseEntity<?> getAllJournalOfUser(){
@@ -62,6 +87,7 @@ public class JournalEntryController {
             if(journalEntity.getSentiment() == null){
                 journalEntity.setSentiment(null);
             }
+            invalidateCache();                                 //          cache update
             return new ResponseEntity<>(journalEntity, HttpStatus.CREATED);
         } catch (Exception e) {
             System.out.println(e);
@@ -95,6 +121,7 @@ public class JournalEntryController {
         List<JournalEntity> collect = user.getJournalEntries().stream().filter(x -> x.getId().equals(id)).collect(Collectors.toList());
         if(!collect.isEmpty()){
             if (journalEntity != null) {
+                 invalidateCache();                 // Cache
 //                System.out.println("Update Journal Called for journal id "+id +"By "+username+"To update" + journalEntity1 +"to : " + journalEntity );
                 return new ResponseEntity<>(journalEntryService.updateEntry(id, journalEntity),HttpStatus.OK);
             }
@@ -114,6 +141,7 @@ public class JournalEntryController {
             if (journalEntity1 != null) {
 //                System.out.println("Delete Journal Called to delete "+id+" by "+username);
                 journalEntryService.deleteEntry(id,username);
+                invalidateCache();                                //            cache
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
         }

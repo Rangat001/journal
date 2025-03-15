@@ -5,17 +5,21 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: math;
     background-color: #f5f5f5;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+
+}
+body::-webkit-scrollbar {
+    display: none;
 }
 
 .container {
     width: 100%;
-    max-width: 800px;
+    height: 100%;
+    position: relative;
+    margin: auto;
     padding: 20px;
 }
 
@@ -23,12 +27,13 @@ body {
     background-color: white;
     padding: 2rem;
     border-radius: 8px;
+    height: 100%;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .quote-container {
-    margin: 2rem 0;
-    padding: 1.5rem;
+    margin: 1.5rem 0;
+    padding: 1rem;
     background-color: #f8f9fa;
     border-radius: 6px;
     border-left: 4px solid #4A90E2;
@@ -74,7 +79,8 @@ label {
 
 input[type="text"],
 input[type="email"],
-input[type="password"] {
+input[type="password"],
+textarea {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #dee2e6;
@@ -93,12 +99,62 @@ input[type="checkbox"] {
 }
 
 .primary-button {
+    background-color: white;
+    color: #4A90E2;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    border: 3px solid #4A90E2;
+    padding: 0.65rem 1.3rem;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.primary-button:hover{
     background-color: #4A90E2;
     color: white;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 4px;
+}
+
+.profile-button2 {
+    background-color: #4A90E2;
+    color: white;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    border: 3px solid #4A90E2;
+    padding: 0.65rem 1.3rem;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
     cursor: pointer;
+}
+
+.profile-button2:hover{
+    background-color: #5a9be435;
+    border-color: #4A90E2;
+    color: #4A90E2;
+}
+
+.logoutbtn {
+    background-color: gray;
+    color: white;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    border: 3px solid gray;
+    padding: 0.65rem 1.3rem;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.logoutbtn:hover{
+    background-color: rgba(151, 150, 150, 0.248);
+    color: gray;
+    border-color: gray;
 }
 
 .danger-button {
@@ -191,4 +247,8 @@ select {
     display: flex;
     align-items: center;
     gap: 1rem;
+}
+
+.input:focus{
+    box-shadow: 0 0 10px 1px rgba(210, 209, 209, 0.792);
 }

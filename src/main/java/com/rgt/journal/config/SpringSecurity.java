@@ -99,7 +99,7 @@ public class SpringSecurity {
         return http.authorizeHttpRequests(request -> request
                                 .requestMatchers("/public/**").permitAll()
                                 .requestMatchers("/RGT/**","/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/journal/**", "/user/**").authenticated()
+                        .requestMatchers("/journal/**", "/user/**","/explore/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                          ).sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // 🔄 Stateless for JWT
