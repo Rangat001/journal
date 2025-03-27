@@ -177,7 +177,7 @@
         // Store the token in localStorage
         localStorage.setItem('jwt_token', token);
         // Redirect to dashboard or home page
-        window.location.href = 'index.html';
+        window.location.href = '/RGT/sonet/index.html';
       } else {
         const error = await response.text();
         alert(error || 'Login failed. Please check your credentials.');

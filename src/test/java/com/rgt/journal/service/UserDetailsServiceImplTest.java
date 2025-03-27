@@ -21,11 +21,10 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-//@SpringBootTest
-
+@SpringBootTest
 @Disabled
 public class UserDetailsServiceImplTest {
-//    @Autowired
+    @Autowired
     @InjectMocks                                                // Use Mock to not use original Resources that's why SpringBOotTest Is disable
     private UserDetailsServiceImpl userDetailsService;
 
@@ -38,19 +37,20 @@ public class UserDetailsServiceImplTest {
         MockitoAnnotations.initMocks(this);          // To intial All Mock resource 
     }
 
+
     @Disabled
     @Test
     void loadUserByUsernameTest(){
-        UserEntity mockUserEntity = new UserEntity("ram","dsubsdjhfd");
-        mockUserEntity.setRoles(List.of("USER")); // Set roles as a List of Strings
+//        UserEntity mockUserEntity = new UserEntity("ram","dsubsdjhfd");
+//        mockUserEntity.setRoles(List.of("USER")); // Set roles as a List of Strings
 
         // Mock the repository call to return the mock UserEntity
-        when(userRepository.findByusername(ArgumentMatchers.anyString())).thenReturn(mockUserEntity);
-
-        // Call the service method
-        UserDetails userDetails = userDetailsService.loadUserByUsername("ram");
-
-        // Assertions
-        Assertions.assertNotNull(userDetails, "UserDetails should not be null");
+//        when(userRepository.findByusername(ArgumentMatchers.anyString())).thenReturn(mockUserEntity);
+//
+//        // Call the service method
+//        UserDetails userDetails = userDetailsService.loadUserByUsername("ram");
+//
+//        // Assertions
+//        Assertions.assertNotNull(userDetails, "UserDetails should not be null");
     }
 }

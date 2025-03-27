@@ -10,13 +10,16 @@ import org.springframework.data.redis.core.RedisTemplate;
 public class RedisTest {
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String,Object> redisTemplate;
 
-    @Disabled
+
     @Test
     void redistest(){
         redisTemplate.opsForValue().set("email","lgshop617@gmail.com");
-        Object eamil = redisTemplate.opsForValue().get("email");
-    }
+        Object email = redisTemplate.opsForValue().get("email");
+        Object name = redisTemplate.opsForValue().get("name");
+        System.out.println(email);
+        System.out.println(name);
+}
 
 }
