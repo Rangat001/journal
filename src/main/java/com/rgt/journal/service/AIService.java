@@ -19,7 +19,7 @@ public class AIService {
     // Method for content improvement
     public String improveContent(String title, String mood, String content) {
         String context = "Improve the journal entry with the title '" + title +
-                "' and mood '" + mood + "':\n\n" + content;
+                "' and mood '" + mood + "the content is:" + content+"in 100 to 400 words";
         return callAI(context, title, mood);
     }
 
