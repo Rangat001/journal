@@ -97,7 +97,7 @@ public class SpringSecurity {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(request -> request
-                                .requestMatchers("/public/**").permitAll()
+                                .requestMatchers("/public/**","/ai/**").permitAll()
                                 .requestMatchers("/RGT/**","/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/journal/**", "/user/**","/explore/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")

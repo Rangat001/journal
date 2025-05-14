@@ -19,5 +19,4 @@ public class JournalEntity {
     private String content;
     private LocalDateTime date;
     private Sentiment sentiment;
-
 }
