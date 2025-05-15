@@ -36,6 +36,7 @@ public class AIJournalController {
         try {
             System.out.println("Generate called");
             String generatedContent = aiService.generateContent(request.getTitle(), request.getMood());
+
             return new ResponseEntity<>(generatedContent, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error generating content", HttpStatus.INTERNAL_SERVER_ERROR);

@@ -1,5 +1,7 @@
 package com.rgt.journal.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -59,6 +61,17 @@ public class AIService {
         ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, entity, String.class);
 
         // Return the response body
-        return response.getBody();
+        return extractTextFromResponse(response.getBody());
+    }
+
+    private String extractTextFromResponse(String responseBody) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(responseBody);
+            return rootNode.path("data").path("outputs").get(0).path("text").asText();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error extracting text from the AI response.";
+        }
     }
 }
