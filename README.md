@@ -10,6 +10,7 @@ This Journal application is a full-stack web application that allows users to cr
 
 - **Secure Authentication**: JWT-based user authentication system
 - **Journal Entries Management**: Create, read, update, and delete journal entries
+- **AI**: AI-Powered Journal Entry Enhancer
 - **Sentiment Tracking**: Track your mood with each journal entry
 - **Real-time Updates**: Dynamic content updates without page refresh
 - **User Profiles**: Personalized user experience
