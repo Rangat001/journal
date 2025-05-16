@@ -237,7 +237,7 @@
             </span>
         </div>
         <div class="journal-content">
-            ${journal.content}
+            ${(journal.content || '').split('\n').join('<br>')}
         </div>
     `;
 

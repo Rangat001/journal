@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             li.className = "journal-entry";
             li.innerHTML = `<strong>${entry.title}</strong><br>
                         <em>${new Date(entry.date).toLocaleString()}</em><br>
-                        <p>${entry.content}</p>
+                        <p>${(entry.content || '').split('\n').join('<br>')}</p>
                         <span>Sentiment: ${entry.sentiment}</span>`;
             journalList.appendChild(li);
         });

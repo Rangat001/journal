@@ -82,7 +82,7 @@ function displayJournalEntries(entries) {
                 </div>
                 <div class="entry-date">${formatDisplayDate(entry.date)}</div>
             </div>
-            <div class="journal-entry-content">${entry.content || ''}</div>
+            <div class="journal-entry-content">${(entry.content || '').split('\n').join('<br>')}</div>
             <div class="journal-actions">
                 <button onclick="editEntry('${entry.id}')" class="edit-button">Edit</button>
                 <button onclick="deleteEntry('${entry.id}')" class="delete-button">Delete</button>
@@ -143,6 +143,7 @@ document.getElementById('journalForm').addEventListener('submit', async (e) => {
         showError('Failed to save journal entry');
     }
 });
+
 
 // Update entry function
 async function updateEntry(id, data) {
