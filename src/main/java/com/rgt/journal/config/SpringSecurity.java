@@ -101,6 +101,7 @@ public class SpringSecurity {
                                 .requestMatchers("/RGT/**","/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/journal/**", "/user/**","/explore/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                                .anyRequest().permitAll()
                          ).sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // 🔄 Stateless for JWT
                 )
