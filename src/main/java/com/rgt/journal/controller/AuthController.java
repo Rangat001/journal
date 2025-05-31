@@ -141,22 +141,31 @@ public class AuthController {
                 // Check if user exists, create if not
                 UserDetails userDetails = null;
                 try{
-                    userDetails = userDetailsService.loadUserByUsername(email);
+                    userDetails = userDetailsService.loadUserByUsername(name);
                 } catch (UsernameNotFoundException e) {
                     // Create new user
                     UserEntity user = new UserEntity();
                     user.setEmail(email);
-                    user.setUsername(email);
+                    user.setUsername(name);
                     user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
                     user.setRoles(Arrays.asList("USER"));
 
 
                     userRepository.save(user);
-                    log.info("Created new user from Google OAuth: {}", email);
+                    log.info("Created new user from Google OAuth: {}",name);
                 }
 
-                String jwtToken = jwTutil.generateToken(email);
-                return ResponseEntity.ok(Collections.singletonMap("token", jwtToken));
+                String jwtToken = jwTutil.generateToken(name);
+                String htmlResponse = "<!DOCTYPE html>" +
+                        "<html><head><title>Redirecting...</title></head>" +
+                        "<body><script>" +
+                        "localStorage.setItem('jwt_token', '" + jwtToken + "');" +
+                        "window.location.href = '/RGT/sonet/index.html';" +
+                        "</script></body></html>";
+
+                return ResponseEntity.ok()
+                        .contentType(MediaType.TEXT_HTML)
+                        .body(htmlResponse);
             }
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -177,8 +186,8 @@ public class AuthController {
     @Value("${spring.security.oauth.client.registration.github.clientSecrete}")
     String githubClientSecret;
 
-    @PostMapping("/github/callback")
-    public ResponseEntity<?> handleGitHubCallback(@RequestBody Map<String, String> requestBody){
+    @GetMapping("/github/callback")
+    public ResponseEntity<?> handleGitHubCallback(@RequestParam Map<String, String> requestBody){
         try {
             String code = requestBody.get("code");
 
@@ -223,7 +232,7 @@ public class AuthController {
                 // Get user email (GitHub might not provide email in user endpoint)
                 String email = (String) userInfo.get("email");
                 String username = (String) userInfo.get("login");
-                String name = (String) userInfo.get("name");
+
 
                 // If email is null, try to get it from emails endpoint
                 if (email == null) {
@@ -236,7 +245,7 @@ public class AuthController {
                 // Check if user exists, create if not
                 UserDetails userDetails = null;
                 try{
-                    userDetails = userDetailsService.loadUserByUsername(userIdentifier);
+                    userDetails = userDetailsService.loadUserByUsername(username);
                 } catch (UsernameNotFoundException e) {
                     // Create new user
                     UserEntity user = new UserEntity();
@@ -246,11 +255,22 @@ public class AuthController {
                     user.setRoles(Arrays.asList("USER"));
 
                     userRepository.save(user);
-                    log.info("Created new user from GitHub OAuth: {}", userIdentifier);
+                    log.info("Created new user from GitHub OAuth: {}", username);
                 }
 
-                String jwtToken = jwTutil.generateToken(userIdentifier);
-                return ResponseEntity.ok(Collections.singletonMap("token", jwtToken));
+                String jwtToken = jwTutil.generateToken(username);
+
+                String htmlResponse = "<!DOCTYPE html>" +
+                        "<html><head><title>Redirecting...</title></head>" +
+                        "<body><script>" +
+                        "localStorage.setItem('jwt_token', '" + jwtToken + "');" +
+                        "window.location.href = '/RGT/sonet/index.html';" +
+                        "</script></body></html>";
+
+                return ResponseEntity.ok()
+                        .contentType(MediaType.TEXT_HTML)
+                        .body(htmlResponse);
+
             }
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

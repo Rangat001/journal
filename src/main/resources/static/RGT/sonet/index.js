@@ -61,7 +61,7 @@ async function fetchJournalEntries() {
         }
     } catch (error) {
         console.error('Error:', error);
-        showError('Failed to load journal entries');
+//        showError('Failed to load journal entries');
     }
 }
 
