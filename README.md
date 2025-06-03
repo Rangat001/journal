@@ -6,6 +6,8 @@ A secure and interactive web application for personal journaling with sentiment 
 
 This Journal application is a full-stack web application that allows users to create, manage, and track their personal journal entries along with their emotional states. Built with Java Spring Boot backend and HTML/JavaScript frontend, it provides a secure and user-friendly journaling experience.
 
+FOR FULL REPORT OF REPO. CHECKOUT: https://code2tutorial.com/tutorial/9ba68565-2a6a-4b70-9286-b3ef1e9e71d7/index.md
+
 ## 🚀 Features
 
 - **Secure Authentication**: JWT-based user authentication system
