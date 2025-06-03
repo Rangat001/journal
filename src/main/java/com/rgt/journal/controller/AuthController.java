@@ -44,56 +44,6 @@ public class AuthController {
     @Autowired
     private JWTutil jwTutil;
 
-//    @GetMapping("/googleCallback")
-//    public ResponseEntity<?> handelGoogleCallback(@RequestParam String code){
-//        try {
-//            //1. Exchange auth code for tokens
-//            String tokenEndpoint = "https://oauth2.googleapis.com/token";
-//
-//            MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
-//            params.add("code",code);
-//            params.add("client_id",client_id);
-//            params.add("client_secret",clientsecret);
-//            params.add("redirect_uri","https://developers.google.com/oauthplayground");
-//            params.add("grant_type","authorization_code");
-//
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-//
-//            HttpEntity<MultiValueMap<String,String>> request = new HttpEntity<>(params,headers);
-//
-//            ResponseEntity<Map> token_response = restTemplate.postForEntity(tokenEndpoint,request,Map.class);
-//
-//            String tokenid = (String) token_response.getBody().get("id_token");
-//            String userInfoUrl = "https://oauth2.googleapis.com/tokeninfo?id_token=" + tokenid;
-//
-//            ResponseEntity<Map> userInfoResponse = restTemplate.getForEntity(userInfoUrl,Map.class);
-//            if (userInfoResponse.getStatusCode() == HttpStatus.OK){
-//                Map<String,Object> userInfo = userInfoResponse.getBody();
-//                String email = (String) userInfo.get("email");
-//                UserDetails userDetails = null;
-//                try{
-//                    userDetails = userDetailsService.loadUserByUsername(email);
-//                }catch (Exception e){
-//                    UserEntity user = new UserEntity();
-//
-//                    user.setEmail(email);
-//                    user.setUsername(email);
-//                    user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
-//                    user.setRoles(Arrays.asList("USER"));
-//                    userRepository.save(user);
-//                }
-//                String jwtToken = jwTutil.generateToken(email);
-//                return ResponseEntity.ok(Collections.singletonMap("token",jwtToken));
-//            }
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        } catch (Exception e) {
-//            log.error("error occured when hadleGoogleCallback",e);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
-
-
 
     @GetMapping("/google/callback")
     public ResponseEntity<?> handleGoogleCallback(@RequestParam Map<String, String> requestBody){
